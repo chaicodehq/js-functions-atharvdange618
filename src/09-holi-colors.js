@@ -54,21 +54,75 @@
  *   // red and blue objects are UNCHANGED
  */
 export function mixColors(color1, color2) {
-  // Your code here
+  // constraints
+  if (!color1 || !color2) return null;
+
+  const { name: name1, r: r1, g: g1, b: b1 } = color1;
+  const { name: name2, r: r2, g: g2, b: b2 } = color2;
+
+  if (typeof name1 !== "string" || typeof name2 !== "string") return null;
+
+  if (
+    [r1, g1, b1, r2, g2, b2].some(
+      (c) => typeof c !== "number" || c < 0 || c > 255,
+    )
+  )
+    return null;
+
+  const mixedColor = {
+    name: `${name1}-${name2}`,
+    r: Math.round((r1 + r2) / 2),
+    g: Math.round((g1 + g2) / 2),
+    b: Math.round((b1 + b2) / 2),
+  };
+  return mixedColor;
 }
 
 export function adjustBrightness(color, factor) {
-  // Your code here
+  // constraints
+  if (!color || typeof factor !== "number") return null;
+
+  const { name, r, g, b } = color;
+
+  if (typeof name !== "string") return null;
+  if ([r, g, b].some((c) => typeof c !== "number" || c < 0 || c > 255))
+    return null;
+
+  const adjustedColor = {
+    name,
+    r: Math.round(Math.min(255, Math.max(0, r * factor))),
+    g: Math.round(Math.min(255, Math.max(0, g * factor))),
+    b: Math.round(Math.min(255, Math.max(0, b * factor))),
+  };
+  return adjustedColor;
 }
 
 export function addToPalette(palette, color) {
-  // Your code here
+  // constraints
+  if (!Array.isArray(palette)) return [color];
+  if (!color || typeof color.name !== "string") return [...palette];
+
+  return [...palette, color];
 }
 
 export function removeFromPalette(palette, colorName) {
-  // Your code here
+  // constraints
+  if (!Array.isArray(palette)) return [];
+  if (typeof colorName !== "string") return [...palette];
+
+  return palette.filter((color) => color.name !== colorName);
 }
 
 export function mergePalettes(palette1, palette2) {
-  // Your code here
+  // constraints
+  if (!Array.isArray(palette1)) palette1 = [];
+  if (!Array.isArray(palette2)) palette2 = [];
+
+  const merged = [...palette1];
+  palette2.forEach((color) => {
+    if (!merged.some((c) => c.name === color.name)) {
+      merged.push(color);
+    }
+  });
+  return merged;
 }

@@ -45,17 +45,63 @@
  *   // => [{ rating: 5 }, { rating: 3 }]
  */
 export function createFilter(field, operator, value) {
-  // Your code here
+  if ([">", "<", ">=", "<=", "==="].indexOf(operator) === -1) {
+    return () => false;
+  }
+
+  return (obj) => {
+    if (typeof obj !== "object" || obj === null || !(field in obj)) {
+      return false;
+    }
+    const fieldValue = obj[field];
+    switch (operator) {
+      case ">":
+        return fieldValue > value;
+      case "<":
+        return fieldValue < value;
+      case ">=":
+        return fieldValue >= value;
+      case "<=":
+        return fieldValue <= value;
+      case "===":
+        return fieldValue === value;
+      default:
+        return false;
+    }
+  };
 }
 
 export function createSorter(field, order = "asc") {
-  // Your code here
+  return (a, b) => {
+    if (typeof a !== "object" || a === null || !(field in a)) return 1;
+    if (typeof b !== "object" || b === null || !(field in b)) return -1;
+
+    const valA = a[field];
+    const valB = b[field];
+
+    if (valA < valB) return order === "asc" ? -1 : 1;
+    if (valA > valB) return order === "asc" ? 1 : -1;
+    return 0;
+  };
 }
 
 export function createMapper(fields) {
-  // Your code here
+  return (obj) => {
+    if (typeof obj !== "object" || obj === null) return {};
+    const result = {};
+    fields.forEach((field) => {
+      if (field in obj) {
+        result[field] = obj[field];
+      }
+    });
+    return result;
+  };
 }
 
 export function applyOperations(data, ...operations) {
-  // Your code here
+  if (!Array.isArray(data)) return [];
+  return operations.reduce((acc, operation) => {
+    if (typeof operation !== "function") return acc;
+    return operation(acc);
+  }, data);
 }

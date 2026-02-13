@@ -53,21 +53,67 @@
  *   generatePattern(3)        // => ["*", "**", "***", "**", "*"]
  */
 export function repeatChar(char, n) {
-  // Your code here
+  // constraints
+  if (typeof char !== "string" || char.length === 0) return "";
+  if (n <= 0) return "";
+
+  // base case
+  if (n === 1) return char;
+
+  // recursive case
+  return char + repeatChar(char, n - 1);
 }
 
 export function sumNestedArray(arr) {
-  // Your code here
+  // constraints
+  if (!Array.isArray(arr)) return 0;
+
+  // base case
+  if (arr.length === 0) return 0;
+
+  // recursive case
+  const [first, ...rest] = arr;
+  const firstValue = typeof first === "number" ? first : sumNestedArray(first);
+  return firstValue + sumNestedArray(rest);
 }
 
 export function flattenArray(arr) {
-  // Your code here
+  // constraints
+  if (!Array.isArray(arr)) return [];
+
+  // base case
+  if (arr.length === 0) return [];
+
+  // recursive case
+  const [first, ...rest] = arr;
+  const firstValue = Array.isArray(first) ? flattenArray(first) : [first];
+  return firstValue.concat(flattenArray(rest));
 }
 
 export function isPalindrome(str) {
-  // Your code here
+  // constraints
+  if (typeof str !== "string") return false;
+
+  // base case
+  if (str.length <= 1) return true;
+
+  // recursive case
+  const normalizedStr = str.toLowerCase();
+  if (normalizedStr[0] !== normalizedStr[normalizedStr.length - 1])
+    return false;
+  return isPalindrome(normalizedStr.slice(1, -1));
 }
 
 export function generatePattern(n) {
-  // Your code here
+  // constraints
+  if (n <= 0 || !Number.isInteger(n)) return [];
+
+  function buildAscending(current) {
+    if (current > n) return [];
+    return [repeatChar("*", current), ...buildAscending(current + 1)];
+  }
+
+  const ascending = buildAscending(1);
+  const descending = ascending.slice(0, -1).reverse();
+  return [...ascending, ...descending];
 }
